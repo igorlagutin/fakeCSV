@@ -1,0 +1,56 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+{% block links %}
+  <link rel="stylesheet" href="{% static 'generator/css/login.css' %}">
+{% endblock %}
+{% block title %}
+  <title>Login to FakeCSV</title>
+{% endblock %}
+
+{% block content %}
+<section id="login_section">
+        <div id="login_div" class="">
+
+            <h2 id="login_header" class="display-6 text-center">Login</h2>
+            <form id="login-form"
+                  method="post"
+                  action="{% url 'login' %}"
+            >
+                {% csrf_token %}
+
+                    <input id="id_username"
+                           name="username"
+                           type="text"
+                           class="form-control"
+                           placeholder="Username"
+                    >
+
+
+                    <input id="id_password"
+                           name="password"
+                           type="password"
+                           class="form-control"
+                           placeholder="Password"
+                    >
+
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger mt-3" role="alert">
+                      {% for error in form.errors %}
+                        {{error}} error
+                      {% endfor %}
+                    </div>
+                    {% endif %}
+
+                <div id="submit_div" class="d-flex d-flex justify-content-end">
+                    <input type="submit"
+                       id="id_login_submit"
+                       value="Login"
+                       class="btn btn-primary" />
+                    <input type="hidden" name="next" value="{{ next }}" />
+                </div>
+            </form>
+        </div>
+</section>
+{% endblock content %}

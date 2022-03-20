@@ -1,0 +1,27 @@
+html, body{
+  height: 100%;
+}
+
+#login_section {
+  height: 100%;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}
+
+#login_div{
+    display: grid;
+    justify-content: center;
+    border: 1px solid #E8E8E8;
+    padding: 50px  100px 50px 100px;
+    width: 500px;
+
+}
+
+#login_header{
+    margin-bottom: 30px;
+}
+
+#id_username, #id_password, #id_login_submit{
+    margin-top: 20px;
+}
