@@ -1,6 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
+from generator.views import SchemaListView
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="generator/index.html"), name="index")
+    path('', SchemaListView.as_view(), name="index")
 ]

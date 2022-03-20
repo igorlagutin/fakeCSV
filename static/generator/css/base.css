@@ -8,3 +8,9 @@ section{
 .hidden{
     visibility: hidden;
 }
+
+
+#new_schema_button{
+    background-color:#5CB85C;
+    color: white;
+}
