@@ -1,0 +1,64 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+
+{% block links %}{% endblock %}
+
+
+{% block title %}
+    <title>New schema</title>
+{% endblock %}
+
+
+{% block content %}
+<section>
+  <div class="d-flex justify-content-between">
+    <h2>New schema</h2>
+    <div><button type="submit" form="schema_form" class="btn btn-primary">Submit</button></div>
+  </div>
+  <form action="{%url 'schema_create' %}" method="POST" id="schema_form">
+
+    <div class="col-lg-6">
+    {% for element in schema_form %}
+        <div class="form-group mt-2">
+          {{element.label}}
+          {{element}}
+          {{element.errors}}
+        </div>
+    {% endfor %}
+    </div>
+
+    <div id="rows" class="mt-2">
+      <h3 class="mt-4 mb-4">Schema columns</h3>
+      <div id="schema_row_forms">
+      {{schema_row_form.management_form}}
+
+      {% for form in schema_row_form %}
+        <div class="row g-3 schema_row_from">
+          <div class="wrap_input col-lg-3">Column name {{form.name}} {{form.name.errors}}</div>
+          <div class="wrap_input col-lg-2">Type {{form.data_type}} {{form.data_type.errors}}</div>
+          <div class="wrap_input col-lg-1 hidden">From {{form.range_start}}</div>
+          <div class="wrap_input col-lg-1 hidden">To {{form.range_end}}</div>
+          <div class="wrap_input col-lg-2">Order {{form.order}}</div>
+          <div class="wrap_input col-lg-2 position-relative">
+            <button type="button" class="btn btn-link delete_btn">Delete</button>
+          </div>
+        </div>
+      {% endfor %}
+     </div>
+   </div>
+    <div class="mt-3">
+      <button type="button"
+              class="btn btn-primary"
+              id="add_column">Add column
+      </button>
+    </div>
+    {% csrf_token %}
+  </form>
+</section>
+{% endblock %}
+
+
+{% block scripts %}
+  <script src="{% static 'generator/js/create_schema.js' %}" ></script>
+{% endblock %}

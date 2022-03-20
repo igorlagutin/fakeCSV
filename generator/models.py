@@ -23,7 +23,7 @@ class StringCharacter(models.Model):
     is_visible = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.character
+        return self.name
 
     class Meta:
         verbose_name = "String Character"

@@ -14,3 +14,10 @@ section{
     background-color:#5CB85C;
     color: white;
 }
+
+
+.delete_btn{
+    color: #D9534F;
+    position: absolute;
+    bottom:0;
+}
