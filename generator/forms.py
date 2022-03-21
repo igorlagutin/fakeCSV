@@ -1,11 +1,12 @@
 from django.forms import ModelForm, widgets, \
-    formset_factory, ModelChoiceField, CharField, modelformset_factory, Form
-from generator.models import Schema, SchemaRow, DataType
+    formset_factory, ModelChoiceField, CharField, \
+    IntegerField, modelformset_factory, Form
+from generator.models import Schema, SchemaRow
 from generator.repozitories import DataTypeRepozitory
 
 
 class SchemaForm(ModelForm):
-
+    """form for create/edit schema"""
     def __init__(self, *args, **kwargs):
         super(SchemaForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
@@ -17,6 +18,8 @@ class SchemaForm(ModelForm):
 
 
 class SchemaRowForm(ModelForm):
+    """Form for create/edit schema row,
+    is base for SchemaRowFormSet and SchemaEditRowFormSet"""
     data_type = ModelChoiceField(
         queryset=DataTypeRepozitory.get_queryset_for_selector(),
         required=True,
@@ -54,10 +57,23 @@ class SchemaRowForm(ModelForm):
         }
 
 
+# formset for multi schema rows create
 SchemaRowFormSet = formset_factory(SchemaRowForm, extra=1)
+
+# formset for multi schema rows edit
 SchemaEditRowFormSet = modelformset_factory(
     SchemaRow,
     form=SchemaRowForm,
     extra=0,
     can_delete=True
 )
+
+
+class GenerateDatasetForm(Form):
+    """form for dataset generate """
+    rows_qty = IntegerField(
+        widget=widgets.TextInput()
+    )
+    id = IntegerField(
+        widget=widgets.HiddenInput()
+    )

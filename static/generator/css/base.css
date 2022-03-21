@@ -10,7 +10,7 @@ section{
 }
 
 
-#new_schema_button{
+.green_btn{
     background-color:#5CB85C;
     color: white;
 }

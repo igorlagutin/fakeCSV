@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
 from generator.models import Schema, ColumnSeparator, \
-    StringCharacter, DataType, SchemaRow
+    StringCharacter, DataType, SchemaRow, DataSetStatus
 from generator.repozitories import SchemaRepozitory, \
     SchemaRowRepozitory, DataTypeRepozitory
 
@@ -24,6 +24,7 @@ class GeneratorSchemaRepozitoryTest(TestCase):
         )
         col_sep = ColumnSeparator.objects.create(name="coma", character=",")
         str_char = StringCharacter.objects.create(name="single quote", character="'")
+        status = DataSetStatus.objects.create(name="Processing")
 
         self.schema1 = Schema.objects.create(
             name="Shema 1",
@@ -69,6 +70,11 @@ class GeneratorSchemaRepozitoryTest(TestCase):
         self.assertEqual(schema.pk, self.schema1.pk)
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0], self.row)
+
+    def test_create_dataset_by_pk(self):
+        repo = SchemaRepozitory(self.request)
+        dataset_pk = repo.create_dataset(self.schema1.pk)
+        self.assertEqual(dataset_pk, 1)
 
 
 

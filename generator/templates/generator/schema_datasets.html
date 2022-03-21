@@ -1,0 +1,65 @@
+{% extends 'common/base.html' %}
+{% load static %}
+
+
+{% block links %}{% endblock %}
+
+{% block title %}
+    <title>Data sets</title>
+{% endblock %}
+
+{% block content %}
+<section>
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between mb-4">
+            <h2>Data sets</h2>
+            <div>
+                <form class="row d-flex justify-content-end"
+                      method="POST"
+                      action ="{% url 'schema_dataset' view.kwargs.pk %}">
+                  <div class="col-auto">
+                    <label for="rows_qty" class="col-form-label">Rows:</label>
+                  </div>
+                  <div class="col-lg-2">
+                    <input type="text" class="form-control" name="rows_qty" required id="rows_qty">
+                    <input type="hidden" name="id" id="id_id" value="{{view.kwargs.pk}}">
+                  </div>
+                  <div class="col-auto">
+                    <button type="submit" class="btn green_btn mb-3">Generate data</button>
+                  </div>
+                  {% csrf_token %}
+                </form>
+            </div>
+        </div>
+        <div>
+          <table class="table table-bordered">
+              <tr>
+                  <td class="col-lg-1"><b>#</b></td>
+                  <td class="col-lg-4"><b>Created</b></td>
+                  <td class="col-lg-4"><b>Status</b></td>
+                  <td class="col-lg-3"><b>Actions</b></td>
+              </tr>
+              {% for dataset in datasets %}
+              <tr>
+                  <td>{{dataset.seq_number}}</td>
+                  <td>{{dataset.created_at|date:"Y-m-d"}}</td>
+                  <td>
+                      <span class="badge {% if dataset.status.name == 'Ready' %} bg-success {% else %} bg-secondary  {% endif %}">
+                        {{dataset.status}}
+                      </span>
+                  </td>
+                  <td>
+                    {% if dataset.csv_file %}
+                    <a href="{{dataset.csv_file.url}}">Download</a>
+                    {% endif %}
+                  </td>
+              </tr>
+              {% endfor %}
+          </table>
+        </div>
+    </div>
+</section>
+
+
+
+{% endblock %}

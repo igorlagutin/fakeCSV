@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, View
-from django.contrib.auth.mixins import LoginRequiredMixin
 from generator.services import SchemaService, SchemaRowService, DataTypeService
-from generator.forms import SchemaForm, SchemaRowFormSet, SchemaEditRowFormSet
+from generator.forms import SchemaForm, SchemaRowFormSet, \
+    SchemaEditRowFormSet, GenerateDatasetForm
 
 
-class SchemaListView(LoginRequiredMixin, ListView):
+class SchemaListView(ListView):
     """View that display all schemas created by current user"""
     paginate_by = 20
     context_object_name = "schemas"
@@ -16,7 +16,9 @@ class SchemaListView(LoginRequiredMixin, ListView):
         return service.get_user_schemas()
 
 
-class CreateSchemaView(LoginRequiredMixin, View):
+class CreateSchemaView(View):
+    """Add schema and schema rows related to schema,
+    formsets used to provide dynamic rows qty """
     def dispatch(self, request, *args, **kwargs):
         self.has_range_list = DataTypeService.get_data_type_ids_has_range()
         return super(CreateSchemaView, self).dispatch(request, *args, **kwargs)
@@ -49,6 +51,8 @@ class CreateSchemaView(LoginRequiredMixin, View):
             return render(request, 'generator/create_schema.html', context)
 
 class EditSchemaView(View):
+    """ Edit schema and related schema rows, rows also can be deleted,
+    only schema author can edit it"""
     def dispatch(self, request, pk, *args, **kwargs):
         self.service = SchemaService(request)
         self.schema, self.rows = self.service.get_schema_and_related_rows_by_pk(pk)
@@ -94,3 +98,24 @@ class EditSchemaView(View):
             return render(request, 'generator/edit_schema.html', context)
 
         return redirect('schema_list')
+
+class DatasetListView(ListView):
+    """View that display all dataset related to selected schema"""
+    paginate_by = 20
+    context_object_name = "datasets"
+    template_name = "generator/schema_datasets.html"
+
+    def post(self, request, pk, *args, **kwargs):
+        form = GenerateDatasetForm(request.POST)
+        if form.is_valid():
+            service = SchemaService(request)
+            dataset_pk = service.create_dataset(pk)
+            pass  # here will run task
+        return redirect('schema_dataset', pk=pk)
+
+    def get_queryset(self, **kwargs):
+        schema_pk = self.kwargs['pk']
+        service = SchemaService(self.request)
+        return service.get_schema_dataset_by_pk(schema_pk)
+
+

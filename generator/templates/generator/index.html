@@ -15,7 +15,7 @@
             <h2>Data schemas</h2>
 
             <div>
-              <a class="btn"
+              <a class="btn green_btn"
                href="{% url 'schema_create' %}"
                id="new_schema_button"
                role="button">New Schema</a>
@@ -33,7 +33,7 @@
                 {% for schema in schemas %}
                 <tr>
                     <td>{{schema.seq_number}}</td>
-                    <td><a href="#">{{schema.name}}</a></td>
+                    <td><a href="{% url 'schema_dataset' schema.pk %}">{{schema.name}}</a></td>
                     <td>{{schema.created_at|date:"Y-m-d"}}</td>
                     <td><a href="{% url 'schema_edit' schema.pk %}">Edit scheme</a>Delete</td>
                 </tr>
