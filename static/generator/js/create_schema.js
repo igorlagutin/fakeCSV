@@ -1,13 +1,14 @@
 'use strict';
 
-
+let DEFAULT_FROM_VALUE = 0;
+let DEFAULT_TO_VALUE = 0;
 let total_forms = 1;
 let id_schema_row_form_TOTAL_FORMS = document.getElementById("id_schema_row_form-TOTAL_FORMS");
 let schema_row_forms_div = document.getElementById("schema_row_forms");
 let data_type = document.getElementById("id_schema_row_form-0-data_type");
 let copy_data_type =  data_type.cloneNode(true);
 let add_column = document.getElementById("add_column");
-let has_range_data_type_list = ["4","5"];
+let has_range_data_type_list = document.getElementById("has_range_id").dataset.has_range;
 let delete_btn_list = document.getElementsByClassName('delete_btn');
 let select_list = document.getElementsByClassName('data_type_select');
 
@@ -37,21 +38,11 @@ function handle_data_type_change(event){
         event.target.parentElement.nextElementSibling.nextElementSibling.classList.remove("hidden");
     }
     else{
-        event.target.parentElement.nextElementSibling.firstElementChild.value = null;
+        event.target.parentElement.nextElementSibling.firstElementChild.value = DEFAULT_FROM_VALUE;
         event.target.parentElement.nextElementSibling.classList.add("hidden");
-        event.target.parentElement.nextElementSibling.nextElementSibling.firstElementChild.value = null;
+        event.target.parentElement.nextElementSibling.nextElementSibling.firstElementChild.value = DEFAULT_TO_VALUE;
         event.target.parentElement.nextElementSibling.nextElementSibling.classList.add("hidden");
     }
-}
-
-function delete_row_on_click(event){
-    event.preventDefault();
-    let btn = event.target;
-    let parentDiv = btn.parentElement.parentElement;
-    parentDiv.remove();
-    total_forms = total_forms - 1;
-    id_schema_row_form_TOTAL_FORMS.value = total_forms;
-    rebuild_ids_and_names()
 }
 
 function add_row_inputs(event){
@@ -96,6 +87,7 @@ function add_row_inputs(event){
         new_range_start.type = "number"
         new_range_start.name = "schema_row_form-${total_forms}-range_start".replace("${total_forms}", total_forms);
         new_range_start.id = "id_schema_row_form-${total_forms}-range_start".replace("${total_forms}", total_forms);
+        new_range_start.value = DEFAULT_FROM_VALUE
         new_range_start.classList.add("form-control", "col-lg-1")
 
     let new_range_start_wrap_div = wrap_div.cloneNode(true);
@@ -111,6 +103,7 @@ function add_row_inputs(event){
         new_range_end.type = "number"
         new_range_end.name = "schema_row_form-${total_forms}-range_end".replace("${total_forms}", total_forms);
         new_range_end.id = "id_schema_row_form-${total_forms}-range_end".replace("${total_forms}", total_forms);
+        new_range_end.value = DEFAULT_TO_VALUE
         new_range_end.classList.add("form-control")
 
     let new_range_end_wrap_div = wrap_div.cloneNode(true);
@@ -162,7 +155,11 @@ function add_row_inputs(event){
 
 document.getElementById("id_schema_form-name").focus();
 
-add_column.addEventListener('click', add_row_inputs, false);
+if (add_column){
+    add_column.addEventListener('click', add_row_inputs, false);
+}
+
+
 
 // add click event on all existing Delete buttons
 [...delete_btn_list].forEach(function(element) {

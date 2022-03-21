@@ -1,0 +1,55 @@
+<section>
+  <div class="d-flex justify-content-between">
+    <h2>{{heading}} {{pk}}</h2>
+    <div><button type="submit" form="schema_form" class="btn btn-primary">{{submit_btn_text}}</button></div>
+  </div>
+  <form action={% if heading == 'New schema' %}"{% url 'schema_create' %}" {% else %} "{% url 'schema_edit' pk %}" {% endif %}
+        method="POST"
+        id="schema_form">
+
+    <div class="col-lg-6">
+    {% for element in schema_form %}
+        <div class="form-group mt-2">
+          {{element.label}}
+          {{element}}
+          {{element.errors}}
+        </div>
+    {% endfor %}
+    </div>
+
+    <div id="rows" class="mt-2">
+      <h3 class="mt-4 mb-4">Schema columns</h3>
+      <div id="schema_row_forms">
+      {{schema_row_form.management_form}}
+
+      {% for form in schema_row_form %}
+        <div class="row g-3 schema_row_from">
+          {{form.id}}
+          <div class="wrap_input col-lg-3">Column name {{form.name}} {{form.name.errors}}</div>
+          <div class="wrap_input col-lg-2">Type {{form.data_type}} {{form.data_type.errors}}</div>
+          <div class="wrap_input col-lg-1 {% if form.data_type.value not in has_range %} hidden {% endif %}">
+            From {{form.range_start}}
+          </div>
+          <div class="wrap_input col-lg-1 {% if form.data_type.value not in has_range %} hidden {% endif %}">
+            To {{form.range_end}}
+          </div>
+          <div class="wrap_input col-lg-2">Order {{form.order}}</div>
+          <div class="wrap_input col-lg-2 position-relative">
+            <button type="button" class="btn btn-link delete_btn">Delete</button>
+          </div>
+        </div>
+      {% endfor %}
+     </div>
+   </div>
+   {% if  heading == "New schema" %}
+    <div class="mt-3">
+      <button type="button"
+              class="btn btn-primary"
+              id="add_column">Add column
+      </button>
+    </div>
+    {% endif %}
+    {% csrf_token %}
+  </form>
+  <input type="hidden" data-has_range="{{has_range}}" id="has_range_id">
+</section>

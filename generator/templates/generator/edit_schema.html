@@ -6,16 +6,16 @@
 
 
 {% block title %}
-    <title>New schema</title>
+    <title>Edit schema {{pk}}</title>
 {% endblock %}
 
 
 {% block content %}
-  {% include "generator/edit_create_form.html" with heading="New schema" submit_btn_text="Submit" %}
+  {% include "generator/edit_create_form.html" with heading="Edit schema" submit_btn_text="Save" pk=pk %}
 {% endblock %}
 
 
 {% block scripts %}
   <script src="{% static 'generator/js/create_schema.js' %}" ></script>
-  <script src="{% static 'generator/js/delete_button_on_create.js' %}" ></script>
+  <script src="{% static 'generator/js/delete_button_on_edit.js' %}" ></script>
 {% endblock %}

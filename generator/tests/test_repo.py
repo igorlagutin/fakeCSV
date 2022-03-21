@@ -1,7 +1,9 @@
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
-from generator.models import Schema, ColumnSeparator, StringCharacter, DataType
-from generator.repozitories import SchemaRepozitory, SchemaRowRepozitory, DataTypeRepozitory
+from generator.models import Schema, ColumnSeparator, \
+    StringCharacter, DataType, SchemaRow
+from generator.repozitories import SchemaRepozitory, \
+    SchemaRowRepozitory, DataTypeRepozitory
 
 
 class GeneratorSchemaRepozitoryTest(TestCase):
@@ -22,18 +24,29 @@ class GeneratorSchemaRepozitoryTest(TestCase):
         )
         col_sep = ColumnSeparator.objects.create(name="coma", character=",")
         str_char = StringCharacter.objects.create(name="single quote", character="'")
-        Schema.objects.create(
+
+        self.schema1 = Schema.objects.create(
             name="Shema 1",
             column_separator=col_sep,
             string_character=str_char,
             author=user1
         )
-        Schema.objects.create(
+        self.schema2 = Schema.objects.create(
             name="Shema 2",
             column_separator=col_sep,
             string_character=str_char,
             author=user2
         )
+
+        data_type = DataType.objects.create(name="type_visible")
+
+        self.row = SchemaRow.objects.create(
+            name="row",
+            data_type=data_type,
+            author=user1,
+            schema=self.schema1
+        )
+
         factory = RequestFactory()
         self.request = factory.get('/')
         self.request.user = User.objects.get(username=self.USERNAME_1)
@@ -50,21 +63,35 @@ class GeneratorSchemaRepozitoryTest(TestCase):
         self.assertEqual(current_user_schemas.count(), 1)
         self.assertEqual(current_user_schemas.last().name, "Shema 1")
 
+    def test_get_schema_and_related_rows_by_pk(self):
+        repo = SchemaRepozitory(self.request)
+        schema, rows = repo.get_schema_and_related_rows_by_pk(self.schema1.pk)
+        self.assertEqual(schema.pk, self.schema1.pk)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0], self.row)
+
+
 
 class GeneratorDataTypeRepozitoryTest(TestCase):
     def setUp(self):
-        DataType.objects.create(name="type1_visible")
-        DataType.objects.create(name="type2_visible")
-        DataType.objects.create(name="type3_invisible", is_visible=False)
+        self.data_type1 = DataType.objects.create(name="type1_visible", has_range=True)
+        self.data_type2 = DataType.objects.create(name="type2_visible", has_range=True)
+        self.data_type3 = DataType.objects.create(name="type3_invisible", is_visible=False)
 
     def tearDown(self):
         DataType.objects.all().delete()
 
     def test_get_queryset_for_selector_return_only_visible(self):
         queryset_for_selector = DataTypeRepozitory.get_queryset_for_selector()
-        self.assertEqual(queryset_for_selector.count(), 2)
+        self.assertEqual(len(queryset_for_selector), 2)
         self.assertTrue(queryset_for_selector[0].is_visible)
         self.assertTrue(queryset_for_selector[1].is_visible)
+
+    def test_get_data_type_ids_has_range(self):
+        has_range_list = DataTypeRepozitory.get_data_type_ids_has_range()
+        self.assertEqual(len(has_range_list), 2)
+        self.assertEqual(has_range_list[0], self.data_type1.pk)
+        self.assertEqual(has_range_list[1], self.data_type2.pk)
 
 
 class GeneratorSchemaRowRepozitoryTest(TestCase):

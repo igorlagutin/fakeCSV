@@ -35,7 +35,7 @@
                     <td>{{schema.seq_number}}</td>
                     <td><a href="#">{{schema.name}}</a></td>
                     <td>{{schema.created_at|date:"Y-m-d"}}</td>
-                    <td>Edit scheme Delete</td>
+                    <td><a href="{% url 'schema_edit' schema.pk %}">Edit scheme</a>Delete</td>
                 </tr>
                 {% endfor %}
             </table>

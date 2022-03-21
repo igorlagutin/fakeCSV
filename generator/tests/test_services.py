@@ -2,10 +2,10 @@ from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
 from generator.models import Schema, ColumnSeparator, StringCharacter, DataType, SchemaRow
 from generator.services import SchemaService, SchemaRowService
-from generator.forms import SchemaForm, SchemaRowFormSet
+from generator.forms import SchemaForm
 
 
-class GeneratorSchemaServiceTest(TestCase):
+class GeneratorServiceTest(TestCase):
 
     def setUp(self):
         self.USERNAME_1 = 'test1'
@@ -79,7 +79,7 @@ class GeneratorSchemaServiceTest(TestCase):
     def test_save_schema_row_formset(self):
         data_type = DataType.objects.last()
         service = SchemaRowService(self.request)
-        clined_form = [
+        cleaned_form = [
             {'name': 'row1',
              'range_start': 11,
              'range_end': 12,
@@ -93,5 +93,5 @@ class GeneratorSchemaServiceTest(TestCase):
              'data_type': data_type,
             }, ]
         schema_pk = Schema.objects.last().pk
-        service.save_schema_row_formset(clined_form,schema_pk)
+        service.create_schema_row_from_formset(cleaned_form, schema_pk)
         self.assertEqual(SchemaRow.objects.last().name, 'row2')
