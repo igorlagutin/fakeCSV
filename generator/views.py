@@ -99,6 +99,16 @@ class EditSchemaView(View):
 
         return redirect('schema_list')
 
+
+class DeleteSchemaView(View):
+    def get(self, request, pk, *args, **kwargs):
+        return redirect('schema_list')
+
+    def post(self, request, pk, *args, **kwargs):
+        SchemaService(request).delete_schema_by_pk(pk)
+        return redirect('schema_list')
+
+
 class DatasetListView(ListView):
     """View that display all dataset related to selected schema"""
     paginate_by = 20

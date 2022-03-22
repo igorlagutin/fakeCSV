@@ -120,3 +120,24 @@ class GeneratorViewTest(TestCase):
         self.client.login(username=self.USERNAME2, password=self.PASS)
         response = self.client.get(target_url)
         self.assertEqual(response.status_code, 403)
+
+    def test_unauthenticated_delete_view(self):
+        target_url = reverse('delete_schema', kwargs={"pk": self.schema_by_user_1.pk})
+        response = self.client.get(target_url)
+        self.assertRedirects(
+            response,
+            '/accounts/login/?next={}'.format(target_url),
+            status_code=302,
+            target_status_code=200
+        )
+
+    def test_authenticated_dataset_view(self):
+        target_url = reverse('delete_schema', kwargs={"pk": self.schema_by_user_1.pk})
+        self.client.login(username=self.USERNAME, password=self.PASS)
+        response = self.client.get(target_url)
+        self.assertRedirects(
+            response,
+            reverse("schema_list"),
+            status_code=302,
+            target_status_code=200
+        )

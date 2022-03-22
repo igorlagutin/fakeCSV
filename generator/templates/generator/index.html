@@ -35,33 +35,27 @@
                     <td>{{schema.seq_number}}</td>
                     <td><a href="{% url 'schema_dataset' schema.pk %}">{{schema.name}}</a></td>
                     <td>{{schema.created_at|date:"Y-m-d"}}</td>
-                    <td><a href="{% url 'schema_edit' schema.pk %}">Edit scheme</a>Delete</td>
+                    <td>
+                      <a href="{% url 'schema_edit' schema.pk %}" role="button">Edit scheme</a>
+                      <a href="#"
+                         class="link-danger del_link"
+                         data-bs-toggle="modal"
+                         data-bs-target="#deleteModal"
+                         data-bs-id="{{schema.seq_number}}"
+                         data-bs-url="{% url 'delete_schema' schema.pk %}">
+                          Delete</a>
+
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
         </div>
-        <div class="d-flex justify-content-center">
-            <nav aria-label="Page navigation example">
-              <ul class="pagination">
-
-                {% if page_obj.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                </li>
-                {% endif %}
-                <li class="page-item"><a class="btn disabled" href="#">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a></li>
-                {% if page_obj.has_next %}
-                <li class="page-item">
-                  <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-                </li>
-                {% endif %}
-              </ul>
-            </nav>
-        </div>
-
+        {% include 'generator/paginator.html' %}
     </div>
 </section>
+{% include 'generator/delete_modal.html' %}
+{% endblock %}
 
-
-
+{% block scripts %}
+  <script src="{% static 'generator/js/index_delete_modal.js' %}" ></script>
 {% endblock %}

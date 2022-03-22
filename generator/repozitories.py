@@ -44,6 +44,14 @@ class SchemaRepozitory:
         )
         return dataset.pk
 
+    def delete_schema_by_pk(self, schema_pk: int) -> None:
+        """delete schema and all related rows and datasets"""
+        schema = self._get_schema_by_pk(schema_pk)
+        DataSet.objects.filter(schema=schema).delete()
+        SchemaRow.objects.filter(schema=schema).delete()
+        schema.delete()
+
+
 class SchemaRowRepozitory:
     """repo for db actions with SchemaRow"""
     def __init__(self, request):

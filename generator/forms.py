@@ -7,14 +7,27 @@ from generator.repozitories import DataTypeRepozitory
 
 class SchemaForm(ModelForm):
     """form for create/edit schema"""
-    def __init__(self, *args, **kwargs):
-        super(SchemaForm, self).__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
 
     class Meta:
         model = Schema
         fields = ('name', 'column_separator', 'string_character')
+
+        widgets = {
+            'name': widgets.TextInput(attrs={
+                'class': 'form-control',
+                'required': 'required'
+            }),
+
+            'column_separator': widgets.Select(attrs={
+                'class': 'form-select',
+                'required': 'required'
+            }),
+
+            'string_character': widgets.Select(attrs={
+                'class': 'form-select',
+                'required': 'required'
+            })
+        }
 
 
 class SchemaRowForm(ModelForm):

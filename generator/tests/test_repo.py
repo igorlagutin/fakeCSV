@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
 from generator.models import Schema, ColumnSeparator, \
-    StringCharacter, DataType, SchemaRow, DataSetStatus
+    StringCharacter, DataType, SchemaRow, DataSetStatus, DataSet
 from generator.repozitories import SchemaRepozitory, \
     SchemaRowRepozitory, DataTypeRepozitory
 
@@ -24,7 +24,7 @@ class GeneratorSchemaRepozitoryTest(TestCase):
         )
         col_sep = ColumnSeparator.objects.create(name="coma", character=",")
         str_char = StringCharacter.objects.create(name="single quote", character="'")
-        status = DataSetStatus.objects.create(name="Processing")
+        self.status = DataSetStatus.objects.create(name="Processing")
 
         self.schema1 = Schema.objects.create(
             name="Shema 1",
@@ -45,6 +45,11 @@ class GeneratorSchemaRepozitoryTest(TestCase):
             name="row",
             data_type=data_type,
             author=user1,
+            schema=self.schema1
+        )
+
+        self.dataset = DataSet.objects.create(
+            status=self.status,
             schema=self.schema1
         )
 
@@ -74,7 +79,15 @@ class GeneratorSchemaRepozitoryTest(TestCase):
     def test_create_dataset_by_pk(self):
         repo = SchemaRepozitory(self.request)
         dataset_pk = repo.create_dataset(self.schema1.pk)
-        self.assertEqual(dataset_pk, 1)
+        self.assertEqual(dataset_pk, 2) # first is created in setUp method
+
+    def test_delete_dataset_by_pk(self):
+        repo = SchemaRepozitory(self.request)
+        schema_pk = self.schema1.pk
+        repo.delete_schema_by_pk(schema_pk)
+        self.assertEqual(Schema.objects.filter(name=self.schema1.name).count(), 0)
+        self.assertEqual(DataSet.objects.count(), 0)
+        self.assertEqual(SchemaRow.objects.count(), 0)
 
 
 

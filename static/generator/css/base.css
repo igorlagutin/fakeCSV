@@ -21,3 +21,8 @@ section{
     position: absolute;
     bottom:0;
 }
+
+
+.del_link{
+    margin-left: 20px;
+}

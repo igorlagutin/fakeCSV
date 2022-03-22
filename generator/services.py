@@ -47,6 +47,10 @@ class SchemaService:
         """create dataset with default status and schema by pk """
         return self.repo.create_dataset(schema_pk)
 
+    def delete_schema_by_pk(self, schema_pk: int) -> None:
+        """delete schema and related rows and datasets by schema pk"""
+        self.repo.delete_schema_by_pk(schema_pk)
+
 
 class SchemaRowService:
     """business logic related to schema rows"""
