@@ -3,6 +3,7 @@ from django.views.generic import ListView, View
 from generator.services import SchemaService, SchemaRowService, DataTypeService
 from generator.forms import SchemaForm, SchemaRowFormSet, \
     SchemaEditRowFormSet, GenerateDatasetForm
+from generator.tasks import create_csv
 
 
 class SchemaListView(ListView):
@@ -120,7 +121,8 @@ class DatasetListView(ListView):
         if form.is_valid():
             service = SchemaService(request)
             dataset_pk = service.create_dataset(pk)
-            pass  # here will run task
+            rows_qty = form.cleaned_data['rows_qty']
+            create_csv.delay(dataset_pk, rows_qty)
         return redirect('schema_dataset', pk=pk)
 
     def get_queryset(self, **kwargs):

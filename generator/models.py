@@ -74,7 +74,7 @@ class SchemaRow(models.Model):
     """Schema rows with data type and name - data for cvs columns in data schema"""
     name = models.CharField(max_length=100)
     data_type = models.ForeignKey(DataType, on_delete=models.PROTECT)
-    range_start = models.IntegerField(null=True, blank=True)
+    range_start = models.IntegerField(null=True, blank=True,)
     range_end = models.IntegerField(null=True, blank=True)
     order = models.IntegerField(null=True, blank=True, default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
